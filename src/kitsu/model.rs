@@ -30,7 +30,17 @@ pub struct SearchResult {
     pub poster_image: Image,
 }
 
+#[derive(Deserialize, Debug, Clone)]
+pub struct AnimeInfo {
+    slug: String,
+    subtype: String,
+    titles: HashMap<String, String>,
+    #[serde(rename(deserialize = "posterImage"))]
+    poster_image: Image,
+}
+
 pub type SearchResponse = Response<SearchResult>;
+pub type AnimeResponse = Response<AnimeInfo>;
 
 pub enum AnimeStatus {
     Airing,
