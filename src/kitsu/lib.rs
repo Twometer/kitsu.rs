@@ -1,8 +1,7 @@
-use anyhow::bail;
+use model::{AnimeResponse, SearchResponse, SearchResult};
 
-use crate::kitsu::error::KitsuError;
-
-use super::model::{AnimeInfo, AnimeResponse, SearchResponse, SearchResult};
+pub mod error;
+pub mod model;
 
 pub async fn search(query: &str) -> anyhow::Result<Vec<SearchResult>> {
     let query_encoded = urlencoding::encode(query);
@@ -18,21 +17,14 @@ pub async fn search(query: &str) -> anyhow::Result<Vec<SearchResult>> {
     Ok(results)
 }
 
-pub async fn get_anime(slug: &str) -> anyhow::Result<AnimeInfo> {
+pub async fn get_anime(slug: &str) -> anyhow::Result<AnimeResponse> {
     let slug = slug.trim().to_lowercase();
     let slug_encoded = urlencoding::encode(&slug);
     let anime_url = format!("https://kitsu.io/api/edge/anime?filter[slug]={}&include=genres,productions.company,animeProductions.producer,episodes,streamingLinks,characters.character", slug_encoded);
     let result = reqwest::get(anime_url)
         .await?
         .json::<AnimeResponse>()
-        .await?
-        .data
-        .iter()
-        .map(|e| e.attributes.clone())
-        .next();
+        .await?;
 
-    match result {
-        Some(anime) => Ok(anime),
-        None => bail!(KitsuError::AnimeNotFound),
-    }
+    Ok(result)
 }
