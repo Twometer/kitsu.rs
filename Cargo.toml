@@ -2,7 +2,10 @@
 name = "kitsu-rs"
 version = "0.1.0"
 edition = "2021"
-
+description = "Unofficial Rust client for kitsu.io"
+repository = "https://github.com/Twometer/kitsu.rs"
+license = "MIT"
+authors = ["Twometer"]
 
 [lib]
 name = "kitsu_rs"
